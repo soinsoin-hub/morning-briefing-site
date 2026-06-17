@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<!-- saved from url=(0044)file:///C:/Users/UserK/Downloads/index2.html -->
+<html lang="ko"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>아침회의 전파사항</title>
+<style>
+:root {
+  --g0: #1b3010;
+  --g1: #2d4f1a;
+  --g2: #3e6e24;
+  --g3: #5a9632;
+  --g4: #d4ebbf;
+  --g5: #eef6e6;
+  --acc: #c07d10;
+  --acc-l: #fdf3e0;
+  --bg: #f0f2ed;
+  --white: #ffffff;
+  --bd: #cdd5c4;
+  --tx: #1a2810;
+  --mu: #6b7c5a;
+  --red: #b92b2b;
+  --red-l: #fde8e8;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Malgun Gothic','맑은 고딕',sans-serif;background:var(--bg);color:var(--tx);font-size:14px;min-height:100vh}
+
+/* ── 헤더 ── */
+header{background:linear-gradient(160deg,var(--g0) 0%,var(--g1) 60%,var(--g2) 100%);color:#fff;position:sticky;top:0;z-index:200;box-shadow:0 3px 12px rgba(0,0,0,.35)}
+.hd-top{display:flex;align-items:center;justify-content:space-between;padding:12px 20px 8px}
+.hd-left{display:flex;align-items:center;gap:10px}
+.hd-emblem{width:36px;height:36px;border:2px solid rgba(255,255,255,.4);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.hd-title{font-size:17px;font-weight:700;letter-spacing:-.3px}
+.hd-sub{font-size:10px;opacity:.65;margin-top:1px}
+.hd-clock{text-align:right}
+.hd-clock .time{font-size:22px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:.5px}
+.hd-clock .date{font-size:11px;opacity:.7;margin-top:1px}
+
+/* ── 탭 ── */
+.tabs{display:flex;border-top:1px solid rgba(255,255,255,.1)}
+.tab{flex:1;padding:10px 0;text-align:center;cursor:pointer;font-size:13px;font-weight:600;color:rgba(255,255,255,.55);border-bottom:3px solid transparent;transition:all .2s;user-select:none;max-width:260px}
+.tab:hover{color:rgba(255,255,255,.85);background:rgba(255,255,255,.06)}
+.tab.on{color:#fff;border-bottom-color:var(--acc);background:rgba(255,255,255,.05)}
+.badge{display:inline-block;background:var(--acc);color:#fff;border-radius:10px;padding:1px 7px;font-size:11px;margin-left:5px;vertical-align:middle}
+
+/* ── 메인 ── */
+main{max-width:960px;margin:0 auto;padding:20px 14px 40px}
+.page{display:none}.page.on{display:block}
+
+/* ── 필터 바 ── */
+.fbar{background:var(--white);border:1px solid var(--bd);border-radius:8px;padding:10px 14px;margin-bottom:14px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.fl{font-size:11px;color:var(--mu);margin-right:2px;white-space:nowrap}
+.fb{padding:4px 11px;border-radius:16px;border:1px solid var(--bd);background:var(--white);cursor:pointer;font-size:12px;color:var(--mu);font-family:inherit;transition:all .15s}
+.fb:hover{border-color:var(--g2);color:var(--g1)}
+.fb.on{background:var(--g1);color:#fff;border-color:var(--g1)}
+.fb.on-imp-h{background:var(--red);color:#fff;border-color:var(--red)}
+.fb.on-imp-m{background:var(--acc);color:#fff;border-color:var(--acc)}
+.fb.on-imp-l{background:var(--g2);color:#fff;border-color:var(--g2)}
+.fsep{width:1px;height:20px;background:var(--bd);margin:0 4px;flex-shrink:0}
+.fright{margin-left:auto;display:flex;align-items:center;gap:6px}
+.stat{font-size:11px;color:var(--mu)}
+
+/* ── 카드 ── */
+.card-list{display:flex;flex-direction:column;gap:10px}
+.card{background:var(--white);border:1px solid var(--bd);border-radius:10px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.05);transition:box-shadow .2s}
+.card:hover{box-shadow:0 3px 10px rgba(0,0,0,.1)}
+.card-hd{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;cursor:pointer;user-select:none}
+.card-hd:hover{background:#fafbf8}
+.dept-tag{flex-shrink:0;padding:3px 8px;border-radius:4px;font-size:11px;font-weight:700;margin-top:1px;white-space:nowrap}
+.card-info{flex:1;min-width:0}
+.card-ttl{font-size:14px;font-weight:600;line-height:1.4;word-break:break-all}
+.card-meta{font-size:11px;color:var(--mu);margin-top:3px}
+.card-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0}
+.imp{padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;white-space:nowrap}
+.imp-h{background:var(--red-l);color:var(--red)}
+.imp-m{background:var(--acc-l);color:var(--acc)}
+.imp-l{background:var(--g5);color:var(--g2)}
+.cmt-cnt{font-size:11px;color:var(--mu)}
+.chevron{font-size:12px;color:var(--mu);transition:transform .2s;margin-top:4px}
+.card.open .chevron{transform:rotate(180deg)}
+.card.done{opacity:.62}
+.card.done .card-ttl{text-decoration:line-through;color:var(--mu)}
+.done-tag{padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;white-space:nowrap;background:var(--g5);color:var(--g2);border:1px solid var(--g3)}
+/* 체크박스 (카드 헤더용) */
+.chk{flex-shrink:0;width:20px;height:20px;border:2px solid var(--g3);border-radius:5px;background:var(--white);cursor:pointer;display:flex;align-items:center;justify-content:center;margin-top:1px;transition:all .15s;font-size:13px;color:transparent;user-select:none}
+.chk:hover{border-color:var(--g2);background:var(--g5)}
+.chk.on{background:var(--g2);border-color:var(--g2);color:#fff}
+
+/* ── 카드 바디 ── */
+.card-body{border-top:1px solid var(--bd)}
+.card-content{padding:12px 14px;font-size:13px;line-height:1.75;color:#2a3a1a;white-space:pre-wrap;border-bottom:1px solid var(--bd)}
+.card-content:empty{display:none}
+
+/* ── 댓글 ── */
+.cmt-wrap{background:#f8faf5}
+.cmt-title{padding:9px 14px 5px;font-size:12px;font-weight:700;color:var(--g1)}
+.cmt-list{padding:0 14px}
+.cmt-item{display:flex;gap:8px;padding:8px 0;border-bottom:1px solid var(--bd)}
+.cmt-item:last-child{border-bottom:none}
+.cmt-dept{flex-shrink:0;font-size:11px;font-weight:700;padding:2px 7px;border-radius:3px;white-space:nowrap;height:fit-content;margin-top:2px}
+.cmt-body{flex:1;min-width:0}
+.cmt-text{font-size:13px;line-height:1.5;word-break:break-all}
+.cmt-time{font-size:10px;color:var(--mu);margin-top:2px}
+.cmt-form{padding:10px 14px 12px;display:flex;gap:6px;flex-wrap:wrap}
+.cmt-form select,.cmt-form input{border:1px solid var(--bd);border-radius:6px;padding:6px 9px;font-size:13px;font-family:inherit;outline:none;transition:border-color .15s;background:var(--white)}
+.cmt-form select:focus,.cmt-form input:focus{border-color:var(--g2)}
+.cmt-form select{flex-shrink:0}
+.cmt-form input{flex:1;min-width:120px}
+.btn-cmt{padding:6px 13px;background:var(--g2);color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:13px;font-family:inherit;font-weight:600;transition:background .15s;white-space:nowrap}
+.btn-cmt:hover{background:var(--g1)}
+
+/* ── 빈 상태 ── */
+.empty{text-align:center;padding:56px 20px;color:var(--mu)}
+.empty-ico{font-size:44px;margin-bottom:10px}
+
+/* ── 등록 폼 ── */
+.form-wrap{max-width:660px;margin:0 auto}
+.form-card{background:var(--white);border:1px solid var(--bd);border-radius:10px;padding:24px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.form-card h2{font-size:16px;font-weight:700;color:var(--g1);margin-bottom:16px;padding-bottom:12px;border-bottom:2px solid var(--g4)}
+.notice{background:var(--g5);border:1px solid var(--g4);border-radius:6px;padding:9px 12px;font-size:12px;color:var(--g1);margin-bottom:18px}
+.frow{margin-bottom:14px}
+.frow label{display:block;font-size:11px;font-weight:700;color:var(--mu);margin-bottom:5px;text-transform:uppercase;letter-spacing:.3px}
+.frow select,.frow input,.frow textarea{width:100%;border:1px solid var(--bd);border-radius:6px;padding:8px 11px;font-size:14px;font-family:inherit;outline:none;transition:border-color .15s,box-shadow .15s}
+.frow select:focus,.frow input:focus,.frow textarea:focus{border-color:var(--g2);box-shadow:0 0 0 3px rgba(62,110,36,.1)}
+.frow textarea{min-height:110px;resize:vertical;line-height:1.6}
+.frow-2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.btn-sub{width:100%;padding:11px;background:linear-gradient(135deg,var(--g2),var(--g1));color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;transition:opacity .15s;margin-top:4px}
+.btn-sub:hover{opacity:.88}
+
+/* ── 토스트 ── */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(8px);background:var(--g0);color:#fff;padding:9px 22px;border-radius:24px;font-size:13px;font-weight:600;box-shadow:0 4px 16px rgba(0,0,0,.3);z-index:999;opacity:0;transition:opacity .25s,transform .25s;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* 소관과 색상 */
+.d-운영과{background:#e8f4e0;color:#1e5c10;border:1px solid #4a9a2e}
+.d-정작과{background:#e0eaf8;color:#1a3a7a;border:1px solid #2e5abf}
+.d-지원과{background:#fef3e0;color:#7a4a10;border:1px solid #c07d10}
+.d-정통실{background:#f0e4f8;color:#5a1a8a;border:1px solid #8a3abf}
+.d-검사과{background:#fde8e8;color:#8a1a1a;border:1px solid #c03030}
+.d-중대{background:#e0f6f4;color:#0e5a52;border:1px solid #1a9a8a}
+.d-기타{background:#eceef0;color:#3a4450;border:1px solid #8a94a0}
+
+@media(max-width:580px){
+  .hd-top{flex-direction:column;gap:6px;text-align:center}
+  .frow-2{grid-template-columns:1fr}
+  .fbar{gap:4px}
+}
+
+/* ── 잠금 화면 ── */
+#lock{position:fixed;inset:0;z-index:1000;background:linear-gradient(160deg,var(--g0) 0%,var(--g1) 70%,var(--g2) 100%);display:flex;align-items:center;justify-content:center;flex-direction:column;padding:20px}
+.lock-box{background:var(--white);border-radius:14px;padding:34px 30px;width:100%;max-width:340px;box-shadow:0 12px 40px rgba(0,0,0,.4);text-align:center}
+.lock-emblem{width:56px;height:56px;border:2px solid var(--g3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 14px;color:var(--g1)}
+.lock-box h2{font-size:17px;color:var(--g1);margin-bottom:4px}
+.lock-box p{font-size:12px;color:var(--mu);margin-bottom:20px}
+.lock-box input{width:100%;border:1px solid var(--bd);border-radius:8px;padding:11px 14px;font-size:18px;text-align:center;letter-spacing:6px;font-family:inherit;outline:none;transition:border-color .15s}
+.lock-box input:focus{border-color:var(--g2);box-shadow:0 0 0 3px rgba(62,110,36,.12)}
+.lock-box button{width:100%;margin-top:12px;padding:11px;background:linear-gradient(135deg,var(--g2),var(--g1));color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit}
+.lock-err{color:var(--red);font-size:12px;margin-top:10px;min-height:16px}
+
+/* ── 날짜 네비 + 검색 ── */
+.daynav{background:var(--white);border:1px solid var(--bd);border-radius:8px;padding:10px 14px;margin-bottom:12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.daynav-arrow{width:30px;height:30px;border:1px solid var(--bd);background:var(--white);border-radius:6px;cursor:pointer;font-size:14px;color:var(--g1);font-family:inherit;flex-shrink:0;transition:all .15s}
+.daynav-arrow:hover{background:var(--g5);border-color:var(--g2)}
+.daynav-date{font-size:15px;font-weight:700;color:var(--g1);font-variant-numeric:tabular-nums}
+.daynav input[type=date]{border:1px solid var(--bd);border-radius:6px;padding:5px 9px;font-size:13px;font-family:inherit;outline:none;color:var(--tx)}
+.daynav input[type=date]:focus{border-color:var(--g2)}
+.btn-today{padding:6px 12px;border:1px solid var(--g3);background:var(--white);color:var(--g2);border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;font-family:inherit;transition:all .15s}
+.btn-today:hover{background:var(--g5)}
+.searchbox{margin-left:auto;display:flex;align-items:center;gap:6px;flex:1;min-width:160px;max-width:280px}
+.searchbox input{flex:1;border:1px solid var(--bd);border-radius:18px;padding:6px 14px;font-size:13px;font-family:inherit;outline:none;transition:border-color .15s}
+.searchbox input:focus{border-color:var(--g2);box-shadow:0 0 0 3px rgba(62,110,36,.1)}
+.day-count{font-size:12px;color:var(--mu);white-space:nowrap}
+</style>
+</head>
+<body>
+
+<!-- 잠금 화면 -->
+<div id="lock">
+  <div class="lock-box">
+    <div class="lock-emblem">⚑</div>
+    <h2>아침회의 전파사항</h2>
+    <p>접속하려면 비밀번호를 입력하세요</p>
+    <input type="password" id="lock-pw" inputmode="numeric" maxlength="10" placeholder="••••" onkeydown="if(event.key===&#39;Enter&#39;)tryUnlock()">
+    <button onclick="tryUnlock()">접속하기</button>
+    <div class="lock-err" id="lock-err"></div>
+  </div>
+</div>
+
+<header>
+  <div class="hd-top">
+    <div class="hd-left">
+      <div class="hd-emblem">⚑</div>
+      <div>
+        <div class="hd-title">아침회의 전파사항</div>
+        <div class="hd-sub">부대 전파사항 등록 · 공유 시스템</div>
+      </div>
+    </div>
+    <div class="hd-clock">
+      <div class="time" id="clock">19:21:30</div>
+      <div class="date" id="today">2026.06.17 (수)</div>
+    </div>
+  </div>
+  <div class="tabs">
+    <div class="tab on" onclick="goTab(&#39;list&#39;)">📋 전파사항 현황 <span class="badge" id="badge">0</span></div>
+    <div class="tab" onclick="goTab(&#39;reg&#39;)">✏️ 전파사항 등록</div>
+  </div>
+</header>
+
+<main>
+  <!-- 현황 -->
+  <div id="page-list" class="page on">
+    <div class="daynav">
+      <button class="daynav-arrow" onclick="moveDay(-1)" title="이전 날짜">◀</button>
+      <span class="daynav-date" id="daynav-date">2026.06.17 (수) · 오늘</span>
+      <button class="daynav-arrow" onclick="moveDay(1)" title="다음 날짜">▶</button>
+      <input type="date" id="date-picker" onchange="pickDate(this.value)">
+      <button class="btn-today" onclick="goToday()">오늘</button>
+      <span class="day-count" id="day-count">이 날짜 0건</span>
+      <div class="searchbox">
+        <input type="text" id="search" placeholder="🔍 제목·내용·작성자 검색" oninput="onSearch(this.value)">
+      </div>
+    </div>
+    <div class="fbar">
+      <span class="fl">소관과</span>
+      <button class="fb on" data-f="dept" data-v="all" onclick="setF(this,&#39;dept&#39;)">전체</button>
+      <button class="fb" data-f="dept" data-v="운영과" onclick="setF(this,&#39;dept&#39;)">운영과</button>
+      <button class="fb" data-f="dept" data-v="정작과" onclick="setF(this,&#39;dept&#39;)">정작과</button>
+      <button class="fb" data-f="dept" data-v="지원과" onclick="setF(this,&#39;dept&#39;)">지원과</button>
+      <button class="fb" data-f="dept" data-v="정통실" onclick="setF(this,&#39;dept&#39;)">정통실</button>
+      <button class="fb" data-f="dept" data-v="검사과" onclick="setF(this,&#39;dept&#39;)">검사과</button>
+      <button class="fb" data-f="dept" data-v="중대" onclick="setF(this,&#39;dept&#39;)">중대</button>
+      <button class="fb" data-f="dept" data-v="기타" onclick="setF(this,&#39;dept&#39;)">기타</button>
+      <div class="fsep"></div>
+      <span class="fl">중요도</span>
+      <button class="fb on" data-f="imp" data-v="all" onclick="setF(this,&#39;imp&#39;)">전체</button>
+      <button class="fb" data-f="imp" data-v="상" onclick="setF(this,&#39;imp&#39;)">🔴 상</button>
+      <button class="fb" data-f="imp" data-v="중" onclick="setF(this,&#39;imp&#39;)">🟡 중</button>
+      <button class="fb" data-f="imp" data-v="하" onclick="setF(this,&#39;imp&#39;)">🟢 하</button>
+      <div class="fsep"></div>
+      <span class="fl">진행</span>
+      <button class="fb on" data-f="done" data-v="all" onclick="setF(this,&#39;done&#39;)">전체</button>
+      <button class="fb" data-f="done" data-v="open" onclick="setF(this,&#39;done&#39;)">진행중</button>
+      <button class="fb" data-f="done" data-v="done" onclick="setF(this,&#39;done&#39;)">완료</button>
+      <div class="fright"><span class="stat" id="stat-txt">0건 표시 · 완료 0/0</span></div>
+    </div>
+    <div class="card-list" id="card-list"><div class="empty"><div class="empty-ico">📭</div><p>이 날짜에 등록된 전파사항이 없습니다.</p></div></div>
+  </div>
+
+  <!-- 등록 -->
+  <div id="page-reg" class="page">
+    <div class="form-wrap">
+      <div class="form-card">
+        <h2>✏️ 전파사항 등록</h2>
+        <div class="notice">📌 등록 즉시 현황 탭에 반영됩니다. 전 직원이 확인할 수 있습니다.</div>
+        <div class="frow">
+          <label>회의제목 *</label>
+          <select id="f-meeting" onchange="onMeetingChange()">
+            <option value="">-- 선택 --</option>
+            <option>현행작전평가</option>
+            <option>주간회의</option>
+            <option>월간회의</option>
+            <option value="__etc">기타 (직접입력)</option>
+          </select>
+          <input type="text" id="f-meeting-etc" placeholder="회의제목을 직접 입력하세요" style="display:none;margin-top:8px">
+        </div>
+        <div class="frow-2">
+          <div class="frow">
+            <label>소관과 *</label>
+            <select id="f-dept" onchange="onDeptChange()">
+              <option value="">-- 선택 --</option>
+              <option>운영과</option><option>정작과</option><option>지원과</option>
+              <option>정통실</option><option>검사과</option><option>중대</option>
+              <option value="__etc">기타 (직접입력)</option>
+            </select>
+            <input type="text" id="f-dept-etc" placeholder="소관과를 직접 입력하세요" style="display:none;margin-top:8px">
+          </div>
+          <div class="frow">
+            <label>중요도 *</label>
+            <select id="f-imp">
+              <option value="">-- 선택 --</option>
+              <option value="상">🔴 상</option>
+              <option value="중">🟡 중</option>
+              <option value="하">🟢 하</option>
+            </select>
+          </div>
+        </div>
+        <div class="frow">
+          <label>전파사항 제목 *</label>
+          <input type="text" id="f-title" placeholder="전파사항 제목을 입력하세요">
+        </div>
+        <div class="frow">
+          <label>세부 내용</label>
+          <textarea id="f-content" placeholder="세부 내용을 입력하세요 (선택)"></textarea>
+        </div>
+        <div class="frow">
+          <label>작성자</label>
+          <input type="text" id="f-author" placeholder="작성자명 (선택)">
+        </div>
+        <button class="btn-sub" onclick="submit()">등록하기</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── 저장소 키 ──
+const KEY = 'jeonpa_v1';
+const PW  = '5291';
+
+// ── 상태 ──
+let items = [];
+let fDept = 'all', fImp = 'all', fDone = 'all';
+let openSet = new Set();
+let curDate = todayKey();   // 현재 보고 있는 날짜 (YYYY-MM-DD)
+let searchQ = '';           // 검색어
+
+// ── 데이터 ──
+function load() {
+  try { items = JSON.parse(localStorage.getItem(KEY) || '[]'); } catch { items = []; }
+}
+function save() {
+  localStorage.setItem(KEY, JSON.stringify(items));
+}
+
+// ── 잠금 ──
+function tryUnlock() {
+  const pw = document.getElementById('lock-pw').value;
+  if (pw === PW) {
+    document.getElementById('lock').style.display = 'none';
+  } else {
+    document.getElementById('lock-err').textContent = '비밀번호가 올바르지 않습니다.';
+    document.getElementById('lock-pw').value = '';
+    document.getElementById('lock-pw').focus();
+  }
+}
+
+// ── 유틸 ──
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function todayKey() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function dateKeyOf(iso) {
+  const d = new Date(iso);
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function fmtDt(iso) {
+  const d = new Date(iso);
+  return `${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+}
+function fmtDayLabel(key) {
+  const [y,m,dd] = key.split('-').map(Number);
+  const d = new Date(y, m-1, dd);
+  const days = ['일','월','화','수','목','금','토'];
+  const isToday = key === todayKey();
+  return `${y}.${String(m).padStart(2,'0')}.${String(dd).padStart(2,'0')} (${days[d.getDay()]})${isToday?' · 오늘':''}`;
+}
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+// ── 날짜 네비 ──
+function moveDay(delta) {
+  const [y,m,dd] = curDate.split('-').map(Number);
+  const d = new Date(y, m-1, dd);
+  d.setDate(d.getDate() + delta);
+  curDate = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  syncDatePicker();
+  render();
+}
+function pickDate(val) {
+  if (val) { curDate = val; render(); }
+}
+function goToday() {
+  curDate = todayKey();
+  syncDatePicker();
+  render();
+}
+function syncDatePicker() {
+  const dp = document.getElementById('date-picker');
+  if (dp) dp.value = curDate;
+}
+function onSearch(v) {
+  searchQ = v.trim().toLowerCase();
+  render();
+}
+
+// ── 탭 ──
+function goTab(t) {
+  document.querySelectorAll('.tab').forEach((el,i) => el.classList.toggle('on', t==='list'?i===0:i===1));
+  document.getElementById('page-list').classList.toggle('on', t==='list');
+  document.getElementById('page-reg').classList.toggle('on', t==='reg');
+}
+
+// ── 필터 ──
+function setF(btn, type) {
+  const v = btn.dataset.v;
+  if (type === 'dept') fDept = v;
+  else if (type === 'imp') fImp = v;
+  else fDone = v;
+  document.querySelectorAll(`.fb[data-f="${type}"]`).forEach(b => {
+    b.classList.remove('on','on-imp-h','on-imp-m','on-imp-l');
+  });
+  if (type === 'imp' && v !== 'all') {
+    btn.classList.add(v==='상'?'on-imp-h':v==='중'?'on-imp-m':'on-imp-l');
+  } else {
+    btn.classList.add('on');
+  }
+  render();
+}
+
+// ── 렌더 ──
+const KNOWN_DEPTS = ['운영과','정작과','지원과','정통실','검사과','중대'];
+function deptCls(dept) { return KNOWN_DEPTS.includes(dept) ? esc(dept) : '기타'; }
+function impBadge(imp) {
+  const cls = imp==='상'?'imp-h':imp==='중'?'imp-m':'imp-l';
+  const ico = imp==='상'?'🔴':imp==='중'?'🟡':'🟢';
+  return `<span class="imp ${cls}">${ico} ${imp}</span>`;
+}
+
+function render() {
+  load();
+  // 날짜 네비 라벨 갱신
+  document.getElementById('daynav-date').textContent = fmtDayLabel(curDate);
+  document.getElementById('day-count').textContent = '';
+  syncDatePicker();
+
+  // 해당 날짜의 항목만
+  const dayItems = items.filter(it => dateKeyOf(it.at) === curDate);
+
+  const filtered = [...dayItems].reverse().filter(it => {
+    if (fDept!=='all' && it.dept!==fDept) return false;
+    if (fImp!=='all'  && it.imp!==fImp)   return false;
+    if (fDone!=='all' && (fDone==='done' ? !it.done : it.done)) return false;
+    if (searchQ) {
+      const hay = `${it.meeting||''} ${it.title||''} ${it.content||''} ${it.author||''} ${it.dept||''}`.toLowerCase();
+      if (!hay.includes(searchQ)) return false;
+    }
+    return true;
+  });
+  const doneCnt = dayItems.filter(it => it.done).length;
+  document.getElementById('badge').textContent = items.length;
+  document.getElementById('day-count').textContent = `이 날짜 ${dayItems.length}건`;
+  document.getElementById('stat-txt').textContent =
+    `${filtered.length}건 표시 · 완료 ${doneCnt}/${dayItems.length}`;
+
+  const list = document.getElementById('card-list');
+  if (!filtered.length) {
+    const msg = searchQ ? '검색 결과가 없습니다.'
+              : (dayItems.length ? '필터에 해당하는 전파사항이 없습니다.'
+              : '이 날짜에 등록된 전파사항이 없습니다.');
+    list.innerHTML = `<div class="empty"><div class="empty-ico">📭</div><p>${msg}</p></div>`;
+    return;
+  }
+
+  list.innerHTML = filtered.map(it => {
+    const isOpen = openSet.has(it.id);
+    const cmts = it.comments || [];
+    const cmtHtml = cmts.map(c => `
+      <div class="cmt-item">
+        <span class="cmt-dept" style="background:var(--g5);color:var(--g1);border:1px solid var(--g3)">${esc(c.name)}</span>
+        <div class="cmt-body">
+          <div class="cmt-text">${esc(c.text)}</div>
+          <div class="cmt-time">${fmtDt(c.at)}</div>
+        </div>
+      </div>`).join('');
+
+    return `
+    <div class="card${isOpen?' open':''}${it.done?' done':''}" id="c-${it.id}">
+      <div class="card-hd">
+        <span class="chk${it.done?' on':''}" onclick="toggleDone('${it.id}')" title="${it.done?'완료 해제':'완료 체크'}">✓</span>
+        <span class="dept-tag d-${deptCls(it.dept)}" onclick="toggle('${it.id}')">${esc(it.dept)}</span>
+        <div class="card-info" onclick="toggle('${it.id}')">
+          <div class="card-ttl">${esc(it.title)}</div>
+          <div class="card-meta">${it.meeting?'📌 '+esc(it.meeting)+' · ':''}${fmtDt(it.at)}${it.author?' · '+esc(it.author):''}${it.done&&it.doneAt?' · ✓완료 '+fmtDt(it.doneAt):''}</div>
+        </div>
+        <div class="card-right" onclick="toggle('${it.id}')">
+          ${it.done?'<span class="done-tag">✓ 완료</span>':impBadge(it.imp)}
+          <span class="cmt-cnt">💬 ${cmts.length}</span>
+          <span class="chevron">▼</span>
+        </div>
+      </div>
+      ${isOpen ? `
+      <div class="card-body">
+        <div class="card-content">${esc(it.content||'')}</div>
+        <div class="cmt-wrap">
+          <div class="cmt-title">💬 댓글 ${cmts.length}건</div>
+          <div class="cmt-list">${cmtHtml||'<div style="padding:8px 0;font-size:12px;color:#aaa">아직 댓글이 없습니다.</div>'}</div>
+          <div class="cmt-form">
+            <input type="text" id="cn-${it.id}" placeholder="이름" style="flex:0 0 80px;min-width:70px">
+            <input type="text" id="ct-${it.id}" placeholder="댓글을 입력하세요..." onkeydown="if(event.key==='Enter')addCmt('${it.id}')">
+            <button class="btn-cmt" onclick="addCmt('${it.id}')">등록</button>
+          </div>
+        </div>
+      </div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+function toggle(id) {
+  if (openSet.has(id)) openSet.delete(id); else openSet.add(id);
+  render();
+}
+
+// ── 등록 폼: 기타 선택 시 직접입력 토글 ──
+function onMeetingChange() {
+  const sel = document.getElementById('f-meeting').value;
+  const etc = document.getElementById('f-meeting-etc');
+  etc.style.display = (sel === '__etc') ? 'block' : 'none';
+  if (sel === '__etc') etc.focus();
+}
+function onDeptChange() {
+  const sel = document.getElementById('f-dept').value;
+  const etc = document.getElementById('f-dept-etc');
+  etc.style.display = (sel === '__etc') ? 'block' : 'none';
+  if (sel === '__etc') etc.focus();
+}
+
+// ── 등록 ──
+function submit() {
+  let meeting = document.getElementById('f-meeting').value;
+  let dept    = document.getElementById('f-dept').value;
+  const imp   = document.getElementById('f-imp').value;
+  const title = document.getElementById('f-title').value.trim();
+  const content = document.getElementById('f-content').value.trim();
+  const author  = document.getElementById('f-author').value.trim();
+  if (meeting === '__etc') meeting = document.getElementById('f-meeting-etc').value.trim();
+  if (dept === '__etc')    dept    = document.getElementById('f-dept-etc').value.trim();
+  if (!meeting) { alert('회의제목을 입력하세요.'); return; }
+  if (!dept)  { alert('소관과를 입력하세요.'); return; }
+  if (!imp)   { alert('중요도를 선택하세요.'); return; }
+  if (!title) { alert('제목을 입력하세요.'); return; }
+  load();
+  items.push({ id:uid(), meeting, dept, imp, title, content, author, at:new Date().toISOString(), done:false, doneAt:null, comments:[] });
+  save();
+  document.getElementById('f-meeting').value = '';
+  document.getElementById('f-meeting-etc').value = '';
+  document.getElementById('f-meeting-etc').style.display = 'none';
+  document.getElementById('f-dept').value = '';
+  document.getElementById('f-dept-etc').value = '';
+  document.getElementById('f-dept-etc').style.display = 'none';
+  document.getElementById('f-imp').value  = '';
+  document.getElementById('f-title').value   = '';
+  document.getElementById('f-content').value = '';
+  document.getElementById('f-author').value  = '';
+  curDate = todayKey();   // 등록한 항목이 보이도록 오늘 날짜로
+  goTab('list');
+  render();
+  toast('✅ 전파사항이 등록되었습니다.');
+}
+
+// ── 완료 토글 ──
+function toggleDone(id) {
+  load();
+  const it = items.find(x => x.id===id);
+  if (it) {
+    it.done = !it.done;
+    it.doneAt = it.done ? new Date().toISOString() : null;
+  }
+  save();
+  render();
+  toast(it && it.done ? '✓ 완료 처리했습니다.' : '진행중으로 변경했습니다.');
+}
+
+// ── 댓글 ──
+function addCmt(id) {
+  const name = document.getElementById(`cn-${id}`).value.trim();
+  const text = document.getElementById(`ct-${id}`).value.trim();
+  if (!name) { alert('이름을 입력하세요.'); return; }
+  if (!text) { alert('댓글을 입력하세요.'); return; }
+  load();
+  const it = items.find(x => x.id===id);
+  if (it) { it.comments = it.comments||[]; it.comments.push({ id:uid(), name, text, at:new Date().toISOString() }); }
+  save();
+  openSet.add(id);
+  render();
+  toast('💬 댓글이 등록되었습니다.');
+}
+
+// ── 시계 ──
+(function tick() {
+  const now = new Date();
+  document.getElementById('clock').textContent =
+    [now.getHours(),now.getMinutes(),now.getSeconds()].map(n=>String(n).padStart(2,'0')).join(':');
+  const days = ['일','월','화','수','목','금','토'];
+  document.getElementById('today').textContent =
+    `${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')} (${days[now.getDay()]})`;
+  setTimeout(tick, 1000);
+})();
+
+// ── 초기 렌더 ──
+syncDatePicker();
+render();
+document.getElementById('lock-pw').focus();
+</script>
+
+
+</body></html>
