@@ -1,9 +1,14 @@
+
 <!DOCTYPE html>
-<!-- saved from url=(0044)file:///C:/Users/UserK/Downloads/index2.html -->
 <html lang="ko"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>아침회의 전파사항</title>
+
+<!-- ✅ Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
 <style>
 :root {
   --g0: #1b3010;
@@ -81,7 +86,6 @@ main{max-width:960px;margin:0 auto;padding:20px 14px 40px}
 .card.done{opacity:.62}
 .card.done .card-ttl{text-decoration:line-through;color:var(--mu)}
 .done-tag{padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;white-space:nowrap;background:var(--g5);color:var(--g2);border:1px solid var(--g3)}
-/* 체크박스 (카드 헤더용) */
 .chk{flex-shrink:0;width:20px;height:20px;border:2px solid var(--g3);border-radius:5px;background:var(--white);cursor:pointer;display:flex;align-items:center;justify-content:center;margin-top:1px;transition:all .15s;font-size:13px;color:transparent;user-select:none}
 .chk:hover{border-color:var(--g2);background:var(--g5)}
 .chk.on{background:var(--g2);border-color:var(--g2);color:#fff}
@@ -180,7 +184,7 @@ main{max-width:960px;margin:0 auto;padding:20px 14px 40px}
     <div class="lock-emblem">⚑</div>
     <h2>아침회의 전파사항</h2>
     <p>접속하려면 비밀번호를 입력하세요</p>
-    <input type="password" id="lock-pw" inputmode="numeric" maxlength="10" placeholder="••••" onkeydown="if(event.key===&#39;Enter&#39;)tryUnlock()">
+    <input type="password" id="lock-pw" inputmode="numeric" maxlength="10" placeholder="••••" onkeydown="if(event.key==='Enter')tryUnlock()">
     <button onclick="tryUnlock()">접속하기</button>
     <div class="lock-err" id="lock-err"></div>
   </div>
@@ -196,13 +200,13 @@ main{max-width:960px;margin:0 auto;padding:20px 14px 40px}
       </div>
     </div>
     <div class="hd-clock">
-      <div class="time" id="clock">19:21:30</div>
-      <div class="date" id="today">2026.06.17 (수)</div>
+      <div class="time" id="clock">00:00:00</div>
+      <div class="date" id="today"></div>
     </div>
   </div>
   <div class="tabs">
-    <div class="tab on" onclick="goTab(&#39;list&#39;)">📋 전파사항 현황 <span class="badge" id="badge">0</span></div>
-    <div class="tab" onclick="goTab(&#39;reg&#39;)">✏️ 전파사항 등록</div>
+    <div class="tab on" onclick="goTab('list')">📋 전파사항 현황 <span class="badge" id="badge">0</span></div>
+    <div class="tab" onclick="goTab('reg')">✏️ 전파사항 등록</div>
   </div>
 </header>
 
@@ -211,7 +215,7 @@ main{max-width:960px;margin:0 auto;padding:20px 14px 40px}
   <div id="page-list" class="page on">
     <div class="daynav">
       <button class="daynav-arrow" onclick="moveDay(-1)" title="이전 날짜">◀</button>
-      <span class="daynav-date" id="daynav-date">2026.06.17 (수) · 오늘</span>
+      <span class="daynav-date" id="daynav-date"></span>
       <button class="daynav-arrow" onclick="moveDay(1)" title="다음 날짜">▶</button>
       <input type="date" id="date-picker" onchange="pickDate(this.value)">
       <button class="btn-today" onclick="goToday()">오늘</button>
@@ -222,28 +226,28 @@ main{max-width:960px;margin:0 auto;padding:20px 14px 40px}
     </div>
     <div class="fbar">
       <span class="fl">소관과</span>
-      <button class="fb on" data-f="dept" data-v="all" onclick="setF(this,&#39;dept&#39;)">전체</button>
-      <button class="fb" data-f="dept" data-v="운영과" onclick="setF(this,&#39;dept&#39;)">운영과</button>
-      <button class="fb" data-f="dept" data-v="정작과" onclick="setF(this,&#39;dept&#39;)">정작과</button>
-      <button class="fb" data-f="dept" data-v="지원과" onclick="setF(this,&#39;dept&#39;)">지원과</button>
-      <button class="fb" data-f="dept" data-v="정통실" onclick="setF(this,&#39;dept&#39;)">정통실</button>
-      <button class="fb" data-f="dept" data-v="검사과" onclick="setF(this,&#39;dept&#39;)">검사과</button>
-      <button class="fb" data-f="dept" data-v="중대" onclick="setF(this,&#39;dept&#39;)">중대</button>
-      <button class="fb" data-f="dept" data-v="기타" onclick="setF(this,&#39;dept&#39;)">기타</button>
+      <button class="fb on" data-f="dept" data-v="all" onclick="setF(this,'dept')">전체</button>
+      <button class="fb" data-f="dept" data-v="운영과" onclick="setF(this,'dept')">운영과</button>
+      <button class="fb" data-f="dept" data-v="정작과" onclick="setF(this,'dept')">정작과</button>
+      <button class="fb" data-f="dept" data-v="지원과" onclick="setF(this,'dept')">지원과</button>
+      <button class="fb" data-f="dept" data-v="정통실" onclick="setF(this,'dept')">정통실</button>
+      <button class="fb" data-f="dept" data-v="검사과" onclick="setF(this,'dept')">검사과</button>
+      <button class="fb" data-f="dept" data-v="중대" onclick="setF(this,'dept')">중대</button>
+      <button class="fb" data-f="dept" data-v="기타" onclick="setF(this,'dept')">기타</button>
       <div class="fsep"></div>
       <span class="fl">중요도</span>
-      <button class="fb on" data-f="imp" data-v="all" onclick="setF(this,&#39;imp&#39;)">전체</button>
-      <button class="fb" data-f="imp" data-v="상" onclick="setF(this,&#39;imp&#39;)">🔴 상</button>
-      <button class="fb" data-f="imp" data-v="중" onclick="setF(this,&#39;imp&#39;)">🟡 중</button>
-      <button class="fb" data-f="imp" data-v="하" onclick="setF(this,&#39;imp&#39;)">🟢 하</button>
+      <button class="fb on" data-f="imp" data-v="all" onclick="setF(this,'imp')">전체</button>
+      <button class="fb" data-f="imp" data-v="상" onclick="setF(this,'imp')">🔴 상</button>
+      <button class="fb" data-f="imp" data-v="중" onclick="setF(this,'imp')">🟡 중</button>
+      <button class="fb" data-f="imp" data-v="하" onclick="setF(this,'imp')">🟢 하</button>
       <div class="fsep"></div>
       <span class="fl">진행</span>
-      <button class="fb on" data-f="done" data-v="all" onclick="setF(this,&#39;done&#39;)">전체</button>
-      <button class="fb" data-f="done" data-v="open" onclick="setF(this,&#39;done&#39;)">진행중</button>
-      <button class="fb" data-f="done" data-v="done" onclick="setF(this,&#39;done&#39;)">완료</button>
+      <button class="fb on" data-f="done" data-v="all" onclick="setF(this,'done')">전체</button>
+      <button class="fb" data-f="done" data-v="open" onclick="setF(this,'done')">진행중</button>
+      <button class="fb" data-f="done" data-v="done" onclick="setF(this,'done')">완료</button>
       <div class="fright"><span class="stat" id="stat-txt">0건 표시 · 완료 0/0</span></div>
     </div>
-    <div class="card-list" id="card-list"><div class="empty"><div class="empty-ico">📭</div><p>이 날짜에 등록된 전파사항이 없습니다.</p></div></div>
+    <div class="card-list" id="card-list"><div class="empty"><div class="empty-ico">🔄</div><p>데이터 로딩 중...</p></div></div>
   </div>
 
   <!-- 등록 -->
@@ -305,36 +309,43 @@ main{max-width:960px;margin:0 auto;padding:20px 14px 40px}
 <div class="toast" id="toast"></div>
 
 <script>
-// ── 저장소 키 ──
-const KEY = 'jeonpa_v1';
-const PW  = '5291';
+// ══════════════════════════════════════════════
+// ✅ Firebase 설정
+// 아래 값을 Firebase 콘솔(console.firebase.google.com)에서
+// 프로젝트 설정 > 내 앱 > SDK 설정의 값으로 교체하세요
+// ══════════════════════════════════════════════
+const firebaseConfig = {
+  apiKey:            "AIzaSyCZZfsCCScC0mEPLIFkFl3CAQerrH2ZCjA",
+  authDomain:        "morning-briefing-93ad5.firebaseapp.com",
+  projectId:         "morning-briefing-93ad5",
+  storageBucket:     "morning-briefing-93ad5.firebasestorage.app",
+  messagingSenderId: "536234159275",
+  appId:             "1:536234159275:web:f257ed30ef6b8065bcdbee"
+};
+// ══════════════════════════════════════════════
+
+firebase.initializeApp(firebaseConfig);
+const db  = firebase.firestore();
+const COL = 'jeonpa_v1';   // Firestore 컬렉션 이름
+const PW  = '5291';         // 비밀번호
 
 // ── 상태 ──
 let items = [];
 let fDept = 'all', fImp = 'all', fDone = 'all';
 let openSet = new Set();
-let curDate = todayKey();   // 현재 보고 있는 날짜 (YYYY-MM-DD)
-let searchQ = '';           // 검색어
+let curDate = todayKey();
+let searchQ = '';
 
-// ── 데이터 ──
-function load() {
-  try { items = JSON.parse(localStorage.getItem(KEY) || '[]'); } catch { items = []; }
-}
-function save() {
-  localStorage.setItem(KEY, JSON.stringify(items));
-}
-
-// ── 잠금 ──
-function tryUnlock() {
-  const pw = document.getElementById('lock-pw').value;
-  if (pw === PW) {
-    document.getElementById('lock').style.display = 'none';
-  } else {
-    document.getElementById('lock-err').textContent = '비밀번호가 올바르지 않습니다.';
-    document.getElementById('lock-pw').value = '';
-    document.getElementById('lock-pw').focus();
-  }
-}
+// ── 실시간 동기화 ──
+// Firestore의 onSnapshot으로 데이터 변경 시 자동 갱신
+db.collection(COL).onSnapshot(snapshot => {
+  items = snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
+  render();
+}, err => {
+  console.error('Firestore 오류:', err);
+  document.getElementById('card-list').innerHTML =
+    '<div class="empty"><div class="empty-ico">⚠️</div><p>데이터 로드 실패. Firebase 설정을 확인하세요.</p></div>';
+});
 
 // ── 유틸 ──
 function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
@@ -364,6 +375,18 @@ function toast(msg) {
   clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('show'), 2200);
 }
 
+// ── 잠금 ──
+function tryUnlock() {
+  const pw = document.getElementById('lock-pw').value;
+  if (pw === PW) {
+    document.getElementById('lock').style.display = 'none';
+  } else {
+    document.getElementById('lock-err').textContent = '비밀번호가 올바르지 않습니다.';
+    document.getElementById('lock-pw').value = '';
+    document.getElementById('lock-pw').focus();
+  }
+}
+
 // ── 날짜 네비 ──
 function moveDay(delta) {
   const [y,m,dd] = curDate.split('-').map(Number);
@@ -373,22 +396,13 @@ function moveDay(delta) {
   syncDatePicker();
   render();
 }
-function pickDate(val) {
-  if (val) { curDate = val; render(); }
-}
-function goToday() {
-  curDate = todayKey();
-  syncDatePicker();
-  render();
-}
+function pickDate(val) { if (val) { curDate = val; render(); } }
+function goToday() { curDate = todayKey(); syncDatePicker(); render(); }
 function syncDatePicker() {
   const dp = document.getElementById('date-picker');
   if (dp) dp.value = curDate;
 }
-function onSearch(v) {
-  searchQ = v.trim().toLowerCase();
-  render();
-}
+function onSearch(v) { searchQ = v.trim().toLowerCase(); render(); }
 
 // ── 탭 ──
 function goTab(t) {
@@ -424,15 +438,10 @@ function impBadge(imp) {
 }
 
 function render() {
-  load();
-  // 날짜 네비 라벨 갱신
   document.getElementById('daynav-date').textContent = fmtDayLabel(curDate);
-  document.getElementById('day-count').textContent = '';
   syncDatePicker();
 
-  // 해당 날짜의 항목만
   const dayItems = items.filter(it => dateKeyOf(it.at) === curDate);
-
   const filtered = [...dayItems].reverse().filter(it => {
     if (fDept!=='all' && it.dept!==fDept) return false;
     if (fImp!=='all'  && it.imp!==fImp)   return false;
@@ -507,7 +516,7 @@ function toggle(id) {
   render();
 }
 
-// ── 등록 폼: 기타 선택 시 직접입력 토글 ──
+// ── 등록 폼 토글 ──
 function onMeetingChange() {
   const sel = document.getElementById('f-meeting').value;
   const etc = document.getElementById('f-meeting-etc');
@@ -521,8 +530,8 @@ function onDeptChange() {
   if (sel === '__etc') etc.focus();
 }
 
-// ── 등록 ──
-function submit() {
+// ── 등록 (Firestore에 추가) ──
+async function submit() {
   let meeting = document.getElementById('f-meeting').value;
   let dept    = document.getElementById('f-dept').value;
   const imp   = document.getElementById('f-imp').value;
@@ -532,54 +541,69 @@ function submit() {
   if (meeting === '__etc') meeting = document.getElementById('f-meeting-etc').value.trim();
   if (dept === '__etc')    dept    = document.getElementById('f-dept-etc').value.trim();
   if (!meeting) { alert('회의제목을 입력하세요.'); return; }
-  if (!dept)  { alert('소관과를 입력하세요.'); return; }
-  if (!imp)   { alert('중요도를 선택하세요.'); return; }
-  if (!title) { alert('제목을 입력하세요.'); return; }
-  load();
-  items.push({ id:uid(), meeting, dept, imp, title, content, author, at:new Date().toISOString(), done:false, doneAt:null, comments:[] });
-  save();
-  document.getElementById('f-meeting').value = '';
-  document.getElementById('f-meeting-etc').value = '';
-  document.getElementById('f-meeting-etc').style.display = 'none';
-  document.getElementById('f-dept').value = '';
-  document.getElementById('f-dept-etc').value = '';
-  document.getElementById('f-dept-etc').style.display = 'none';
-  document.getElementById('f-imp').value  = '';
-  document.getElementById('f-title').value   = '';
-  document.getElementById('f-content').value = '';
-  document.getElementById('f-author').value  = '';
-  curDate = todayKey();   // 등록한 항목이 보이도록 오늘 날짜로
-  goTab('list');
-  render();
-  toast('✅ 전파사항이 등록되었습니다.');
-}
+  if (!dept)    { alert('소관과를 입력하세요.'); return; }
+  if (!imp)     { alert('중요도를 선택하세요.'); return; }
+  if (!title)   { alert('제목을 입력하세요.'); return; }
 
-// ── 완료 토글 ──
-function toggleDone(id) {
-  load();
-  const it = items.find(x => x.id===id);
-  if (it) {
-    it.done = !it.done;
-    it.doneAt = it.done ? new Date().toISOString() : null;
+  try {
+    await db.collection(COL).add({
+      meeting, dept, imp, title, content, author,
+      at: new Date().toISOString(),
+      done: false, doneAt: null, comments: []
+    });
+    // 폼 초기화
+    document.getElementById('f-meeting').value = '';
+    document.getElementById('f-meeting-etc').value = '';
+    document.getElementById('f-meeting-etc').style.display = 'none';
+    document.getElementById('f-dept').value = '';
+    document.getElementById('f-dept-etc').value = '';
+    document.getElementById('f-dept-etc').style.display = 'none';
+    document.getElementById('f-imp').value    = '';
+    document.getElementById('f-title').value   = '';
+    document.getElementById('f-content').value = '';
+    document.getElementById('f-author').value  = '';
+    curDate = todayKey();
+    goTab('list');
+    toast('✅ 전파사항이 등록되었습니다.');
+  } catch(e) {
+    alert('등록 실패: ' + e.message);
   }
-  save();
-  render();
-  toast(it && it.done ? '✓ 완료 처리했습니다.' : '진행중으로 변경했습니다.');
 }
 
-// ── 댓글 ──
-function addCmt(id) {
+// ── 완료 토글 (Firestore 업데이트) ──
+async function toggleDone(id) {
+  const it = items.find(x => x.id === id);
+  if (!it) return;
+  const newDone = !it.done;
+  try {
+    await db.collection(COL).doc(id).update({
+      done: newDone,
+      doneAt: newDone ? new Date().toISOString() : null
+    });
+    toast(newDone ? '✓ 완료 처리했습니다.' : '진행중으로 변경했습니다.');
+  } catch(e) {
+    alert('업데이트 실패: ' + e.message);
+  }
+}
+
+// ── 댓글 (Firestore 업데이트) ──
+async function addCmt(id) {
   const name = document.getElementById(`cn-${id}`).value.trim();
   const text = document.getElementById(`ct-${id}`).value.trim();
   if (!name) { alert('이름을 입력하세요.'); return; }
   if (!text) { alert('댓글을 입력하세요.'); return; }
-  load();
-  const it = items.find(x => x.id===id);
-  if (it) { it.comments = it.comments||[]; it.comments.push({ id:uid(), name, text, at:new Date().toISOString() }); }
-  save();
-  openSet.add(id);
-  render();
-  toast('💬 댓글이 등록되었습니다.');
+  const it = items.find(x => x.id === id);
+  if (!it) return;
+  const newComments = [...(it.comments || []), {
+    id: uid(), name, text, at: new Date().toISOString()
+  }];
+  try {
+    await db.collection(COL).doc(id).update({ comments: newComments });
+    openSet.add(id);
+    toast('💬 댓글이 등록되었습니다.');
+  } catch(e) {
+    alert('댓글 등록 실패: ' + e.message);
+  }
 }
 
 // ── 시계 ──
@@ -593,11 +617,9 @@ function addCmt(id) {
   setTimeout(tick, 1000);
 })();
 
-// ── 초기 렌더 ──
 syncDatePicker();
 render();
 document.getElementById('lock-pw').focus();
 </script>
-
 
 </body></html>
