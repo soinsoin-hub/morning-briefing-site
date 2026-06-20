@@ -174,6 +174,18 @@ main{max-width:960px;margin:0 auto;padding:20px 14px 40px}
 .searchbox input{flex:1;border:1px solid var(--bd);border-radius:18px;padding:6px 14px;font-size:13px;font-family:inherit;outline:none;transition:border-color .15s}
 .searchbox input:focus{border-color:var(--g2);box-shadow:0 0 0 3px rgba(62,110,36,.1)}
 .day-count{font-size:12px;color:var(--mu);white-space:nowrap}
+
+/* ── 누적 현황 ── */
+.all-searchbar{background:var(--white);border:1px solid var(--bd);border-radius:8px;padding:10px 14px;margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.all-searchbar input{flex:1;border:1px solid var(--bd);border-radius:18px;padding:7px 16px;font-size:13px;font-family:inherit;outline:none;transition:border-color .15s}
+.all-searchbar input:focus{border-color:var(--g2);box-shadow:0 0 0 3px rgba(62,110,36,.1)}
+.all-stat{font-size:12px;color:var(--mu);white-space:nowrap}
+.date-group{margin-bottom:18px}
+.date-group-hd{display:flex;align-items:center;gap:8px;padding:7px 12px;background:var(--g1);color:#fff;border-radius:7px 7px 0 0;font-size:13px;font-weight:700}
+.date-group-hd .today-badge{background:var(--acc);color:#fff;border-radius:10px;padding:1px 8px;font-size:11px;font-weight:700}
+.date-group-hd .grp-cnt{margin-left:auto;font-size:11px;opacity:.75}
+.date-group .card{border-radius:0}
+.date-group .card:last-child{border-radius:0 0 7px 7px}
 </style>
 </head>
 <body>
@@ -205,7 +217,8 @@ main{max-width:960px;margin:0 auto;padding:20px 14px 40px}
     </div>
   </div>
   <div class="tabs">
-    <div class="tab on" onclick="goTab('list')">📋 전파사항 현황 <span class="badge" id="badge">0</span></div>
+    <div class="tab on" onclick="goTab('list')">📋 오늘 현황 <span class="badge" id="badge">0</span></div>
+    <div class="tab" onclick="goTab('all')">📊 전체 누적</div>
     <div class="tab" onclick="goTab('reg')">✏️ 전파사항 등록</div>
   </div>
 </header>
@@ -248,6 +261,15 @@ main{max-width:960px;margin:0 auto;padding:20px 14px 40px}
       <div class="fright"><span class="stat" id="stat-txt">0건 표시 · 완료 0/0</span></div>
     </div>
     <div class="card-list" id="card-list"><div class="empty"><div class="empty-ico">🔄</div><p>데이터 로딩 중...</p></div></div>
+  </div>
+
+  <!-- 전체 누적 현황 -->
+  <div id="page-all" class="page">
+    <div class="all-searchbar">
+      <input type="text" id="all-search" placeholder="🔍 전체 검색 (제목·내용·소관과·작성자)" oninput="onAllSearch(this.value)">
+      <span class="all-stat" id="all-stat"></span>
+    </div>
+    <div id="all-list"></div>
   </div>
 
   <!-- 등록 -->
@@ -337,10 +359,10 @@ let curDate = todayKey();
 let searchQ = '';
 
 // ── 실시간 동기화 ──
-// Firestore의 onSnapshot으로 데이터 변경 시 자동 갱신
 db.collection(COL).onSnapshot(snapshot => {
   items = snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
   render();
+  renderAll();
 }, err => {
   console.error('Firestore 오류:', err);
   document.getElementById('card-list').innerHTML =
@@ -406,9 +428,14 @@ function onSearch(v) { searchQ = v.trim().toLowerCase(); render(); }
 
 // ── 탭 ──
 function goTab(t) {
-  document.querySelectorAll('.tab').forEach((el,i) => el.classList.toggle('on', t==='list'?i===0:i===1));
+  const tabs = document.querySelectorAll('.tab');
+  tabs[0].classList.toggle('on', t==='list');
+  tabs[1].classList.toggle('on', t==='all');
+  tabs[2].classList.toggle('on', t==='reg');
   document.getElementById('page-list').classList.toggle('on', t==='list');
+  document.getElementById('page-all').classList.toggle('on', t==='all');
   document.getElementById('page-reg').classList.toggle('on', t==='reg');
+  if (t==='all') renderAll();
 }
 
 // ── 필터 ──
@@ -511,9 +538,118 @@ function render() {
   }).join('');
 }
 
-function toggle(id) {
+function toggle(id, fromAll) {
   if (openSet.has(id)) openSet.delete(id); else openSet.add(id);
-  render();
+  if (fromAll) renderAll(); else render();
+}
+
+// ── 누적 현황 검색 상태 ──
+let allSearchQ = '';
+function onAllSearch(v) { allSearchQ = v.trim().toLowerCase(); renderAll(); }
+
+// ── 누적 현황 렌더 ──
+function renderAll() {
+  const container = document.getElementById('all-list');
+  if (!container) return;
+
+  let pool = [...items];
+  if (allSearchQ) {
+    pool = pool.filter(it => {
+      const hay = `${it.meeting||''} ${it.title||''} ${it.content||''} ${it.author||''} ${it.dept||''}`.toLowerCase();
+      return hay.includes(allSearchQ);
+    });
+  }
+
+  // 날짜별 그룹화 (최신 날짜 먼저)
+  const groups = {};
+  pool.forEach(it => {
+    const dk = dateKeyOf(it.at);
+    if (!groups[dk]) groups[dk] = [];
+    groups[dk].push(it);
+  });
+  const sortedDates = Object.keys(groups).sort((a,b) => b.localeCompare(a));
+
+  document.getElementById('all-stat').textContent = `전체 ${pool.length}건`;
+
+  if (!sortedDates.length) {
+    container.innerHTML = `<div class="empty"><div class="empty-ico">📭</div><p>${allSearchQ ? '검색 결과가 없습니다.' : '등록된 전파사항이 없습니다.'}</p></div>`;
+    return;
+  }
+
+  const today = todayKey();
+  container.innerHTML = sortedDates.map(dk => {
+    const grpItems = [...groups[dk]].sort((a,b) => b.at.localeCompare(a.at));
+    const isToday = dk === today;
+    const doneCnt = grpItems.filter(it => it.done).length;
+    const cardsHtml = grpItems.map(it => {
+      const isOpen = openSet.has(it.id);
+      const cmts = it.comments || [];
+      const cmtHtml = cmts.map(c => `
+        <div class="cmt-item">
+          <span class="cmt-dept" style="background:var(--g5);color:var(--g1);border:1px solid var(--g3)">${esc(c.name)}</span>
+          <div class="cmt-body">
+            <div class="cmt-text">${esc(c.text)}</div>
+            <div class="cmt-time">${fmtDt(c.at)}</div>
+          </div>
+        </div>`).join('');
+      return `
+      <div class="card${isOpen?' open':''}${it.done?' done':''}" id="ca-${it.id}">
+        <div class="card-hd">
+          <span class="chk${it.done?' on':''}" onclick="toggleDone('${it.id}')" title="${it.done?'완료 해제':'완료 체크'}">✓</span>
+          <span class="dept-tag d-${deptCls(it.dept)}" onclick="toggle('${it.id}',true)">${esc(it.dept)}</span>
+          <div class="card-info" onclick="toggle('${it.id}',true)">
+            <div class="card-ttl">${esc(it.title)}</div>
+            <div class="card-meta">${it.meeting?'📌 '+esc(it.meeting)+' · ':''}${fmtDt(it.at)}${it.author?' · '+esc(it.author):''}${it.done&&it.doneAt?' · ✓완료 '+fmtDt(it.doneAt):''}</div>
+          </div>
+          <div class="card-right" onclick="toggle('${it.id}',true)">
+            ${it.done?'<span class="done-tag">✓ 완료</span>':impBadge(it.imp)}
+            <span class="cmt-cnt">💬 ${cmts.length}</span>
+            <span class="chevron">▼</span>
+          </div>
+        </div>
+        ${isOpen ? `
+        <div class="card-body">
+          <div class="card-content">${esc(it.content||'')}</div>
+          <div class="cmt-wrap">
+            <div class="cmt-title">💬 댓글 ${cmts.length}건</div>
+            <div class="cmt-list">${cmtHtml||'<div style="padding:8px 0;font-size:12px;color:#aaa">아직 댓글이 없습니다.</div>'}</div>
+            <div class="cmt-form">
+              <input type="text" id="acn-${it.id}" placeholder="이름" style="flex:0 0 80px;min-width:70px">
+              <input type="text" id="act-${it.id}" placeholder="댓글을 입력하세요..." onkeydown="if(event.key==='Enter')addCmtAll('${it.id}')">
+              <button class="btn-cmt" onclick="addCmtAll('${it.id}')">등록</button>
+            </div>
+          </div>
+        </div>` : ''}
+      </div>`;
+    }).join('');
+
+    return `
+    <div class="date-group">
+      <div class="date-group-hd">
+        📅 ${fmtDayLabel(dk)}
+        ${isToday ? '<span class="today-badge">오늘</span>' : ''}
+        <span class="grp-cnt">${grpItems.length}건 · 완료 ${doneCnt}/${grpItems.length}</span>
+      </div>
+      ${cardsHtml}
+    </div>`;
+  }).join('');
+}
+
+async function addCmtAll(id) {
+  const name = document.getElementById(`acn-${id}`).value.trim();
+  const text = document.getElementById(`act-${id}`).value.trim();
+  if (!name) { alert('이름을 입력하세요.'); return; }
+  if (!text) { alert('댓글을 입력하세요.'); return; }
+  const it = items.find(x => x.id === id);
+  if (!it) return;
+  const newComments = [...(it.comments || []), { id: uid(), name, text, at: new Date().toISOString() }];
+  try {
+    await db.collection(COL).doc(id).update({ comments: newComments });
+    openSet.add(id);
+    toast('💬 댓글이 등록되었습니다.');
+  } catch(e) {
+    alert('댓글 등록 실패: ' + e.message);
+  }
 }
 
 // ── 등록 폼 토글 ──
