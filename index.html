@@ -180,6 +180,29 @@ main{max-width:960px;margin:0 auto;padding:20px 14px 40px}
 .all-searchbar input{flex:1;border:1px solid var(--bd);border-radius:18px;padding:7px 16px;font-size:13px;font-family:inherit;outline:none;transition:border-color .15s}
 .all-searchbar input:focus{border-color:var(--g2);box-shadow:0 0 0 3px rgba(62,110,36,.1)}
 .all-stat{font-size:12px;color:var(--mu);white-space:nowrap}
+
+/* ── 총괄현황 패널 ── */
+.summary-panel{background:var(--white);border:1px solid var(--bd);border-radius:10px;padding:16px;margin-bottom:14px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.summary-panel h3{font-size:13px;font-weight:700;color:var(--g1);margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid var(--g4)}
+.summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+.summary-card{background:var(--g5);border-radius:8px;padding:12px;text-align:center}
+.summary-card .s-num{font-size:26px;font-weight:700;color:var(--g1);line-height:1}
+.summary-card .s-label{font-size:11px;color:var(--mu);margin-top:4px}
+.summary-card.done-card{background:#e8f5e9}
+.summary-card.done-card .s-num{color:#2e7d32}
+.summary-card.open-card{background:#fff8e1}
+.summary-card.open-card .s-num{color:#f57f17}
+.summary-card.imp-card{background:var(--red-l)}
+.summary-card.imp-card .s-num{color:var(--red)}
+.dept-bar-wrap{margin-top:4px}
+.dept-bar-title{font-size:11px;font-weight:700;color:var(--mu);margin-bottom:8px}
+.dept-bars{display:flex;flex-direction:column;gap:5px}
+.dept-bar-row{display:flex;align-items:center;gap:8px}
+.dept-bar-name{font-size:11px;color:var(--tx);width:54px;flex-shrink:0;text-align:right}
+.dept-bar-track{flex:1;background:#eee;border-radius:4px;height:10px;overflow:hidden}
+.dept-bar-fill{height:100%;background:var(--g2);border-radius:4px;transition:width .4s}
+.dept-bar-cnt{font-size:11px;color:var(--mu);width:30px;flex-shrink:0}
+@media(max-width:580px){.summary-grid{grid-template-columns:repeat(2,1fr)}}
 .date-group{margin-bottom:18px}
 .date-group-hd{display:flex;align-items:center;gap:8px;padding:7px 12px;background:var(--g1);color:#fff;border-radius:7px 7px 0 0;font-size:13px;font-weight:700}
 .date-group-hd .today-badge{background:var(--acc);color:#fff;border-radius:10px;padding:1px 8px;font-size:11px;font-weight:700}
@@ -265,6 +288,19 @@ main{max-width:960px;margin:0 auto;padding:20px 14px 40px}
 
   <!-- 전체 누적 현황 -->
   <div id="page-all" class="page">
+    <div id="summary-panel" class="summary-panel">
+      <h3>📊 전파사항 총괄현황</h3>
+      <div class="summary-grid">
+        <div class="summary-card"><div class="s-num" id="s-total">0</div><div class="s-label">전체 건수</div></div>
+        <div class="summary-card open-card"><div class="s-num" id="s-open">0</div><div class="s-label">진행중</div></div>
+        <div class="summary-card done-card"><div class="s-num" id="s-done">0</div><div class="s-label">완료</div></div>
+        <div class="summary-card imp-card"><div class="s-num" id="s-imp">0</div><div class="s-label">중요도 상</div></div>
+      </div>
+      <div class="dept-bar-wrap">
+        <div class="dept-bar-title">소관과별 현황</div>
+        <div class="dept-bars" id="dept-bars"></div>
+      </div>
+    </div>
     <div class="all-searchbar">
       <input type="text" id="all-search" placeholder="🔍 전체 검색 (제목·내용·소관과·작성자)" oninput="onAllSearch(this.value)">
       <span class="all-stat" id="all-stat"></span>
@@ -480,7 +516,7 @@ function render() {
     return true;
   });
   const doneCnt = dayItems.filter(it => it.done).length;
-  document.getElementById('badge').textContent = items.length;
+  document.getElementById('badge').textContent = dayItems.length;
   document.getElementById('day-count').textContent = `이 날짜 ${dayItems.length}건`;
   document.getElementById('stat-txt').textContent =
     `${filtered.length}건 표시 · 완료 ${doneCnt}/${dayItems.length}`;
@@ -547,8 +583,36 @@ function toggle(id, fromAll) {
 let allSearchQ = '';
 function onAllSearch(v) { allSearchQ = v.trim().toLowerCase(); renderAll(); }
 
+// ── 총괄현황 업데이트 ──
+function updateSummary() {
+  const total = items.length;
+  const done  = items.filter(it => it.done).length;
+  const open  = total - done;
+  const imp   = items.filter(it => it.imp === '상').length;
+  document.getElementById('s-total').textContent = total;
+  document.getElementById('s-open').textContent  = open;
+  document.getElementById('s-done').textContent  = done;
+  document.getElementById('s-imp').textContent   = imp;
+
+  // 소관과별 집계
+  const deptMap = {};
+  items.forEach(it => { deptMap[it.dept] = (deptMap[it.dept]||0) + 1; });
+  const sorted = Object.entries(deptMap).sort((a,b) => b[1]-a[1]);
+  const max = sorted[0]?.[1] || 1;
+  const barsEl = document.getElementById('dept-bars');
+  if (barsEl) {
+    barsEl.innerHTML = sorted.map(([dept, cnt]) => `
+      <div class="dept-bar-row">
+        <span class="dept-bar-name">${esc(dept)}</span>
+        <div class="dept-bar-track"><div class="dept-bar-fill" style="width:${Math.round(cnt/max*100)}%"></div></div>
+        <span class="dept-bar-cnt">${cnt}건</span>
+      </div>`).join('');
+  }
+}
+
 // ── 누적 현황 렌더 ──
 function renderAll() {
+  updateSummary();
   const container = document.getElementById('all-list');
   if (!container) return;
 
